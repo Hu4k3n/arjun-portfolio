@@ -1,14 +1,16 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import GameUI from '../GameUI';
 import GodotCanvasAndStatus from './GodotCanvasAndStatus';
 import './GodotGame.css';
 import BackButton from '../../Button/BackButton';
 import BackgroundVideo from '../../MainMenu/BackgroundVideo'; 
-import gameBgArt from '../../../assets/bg/bgArt.mp4'; 
+import gameBgArt from '../../../assets/bg/bgArt.mp4';
+import { AudioContext } from '../../../context/AudioContext';
 
 // This component renders the Godot game canvas and status overlays, then runs the Godot loader
-function GodotGame(props) {
+function GodotGame() {
+    const { playAudio, pauseAudio, bgAudioObject } = useContext(AudioContext);
     
     useEffect(() => {
         // Dynamically load the Godot engine script if not already loaded
@@ -61,9 +63,9 @@ function GodotGame(props) {
                 />
             </div>
             <BackButton 
-                onPlay={props.onPlay}
-                onPause={props.onPause}
-                bgAudioObject={props.bgAudioObject}
+                onPlay={playAudio}
+                onPause={pauseAudio}
+                bgAudioObject={bgAudioObject}
             />
             <div className="godot-game-root">
                 <GodotCanvasAndStatus />

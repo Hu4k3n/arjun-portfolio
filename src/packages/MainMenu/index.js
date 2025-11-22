@@ -1,41 +1,45 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import './MainMenu.css';
 import UIButton from '../Button/UIButton';
 import BackgroundVideo from './BackgroundVideo';
 import bgArtVideo from '../../assets/bg/bgArt.mp4';
 import { useNavigate } from 'react-router-dom';
 import { onResume } from '../utils/utils';
+import { AudioContext } from '../../context/AudioContext';
 
 
-function MainMenu(props) {
+function MainMenu() {
     const navigate = useNavigate();
-    const [musicOn, setMusicOn] = React.useState(!!props.bgAudioObject);
+    const { bgAudioObject, playAudio, pauseAudio } = useContext(AudioContext);
+    const [musicOn, setMusicOn] = React.useState(!!bgAudioObject);
 
     const onPlay = () => {
         console.log("Play button clicked");
         setTimeout(() => {
-            props.onPlay && props.onPlay();
-        },3000)
+            playAudio();
+        }, 3000)
         navigate('/game');
     };
+
     const onMusic = () => {
         if (musicOn) {
-            props.onPause && props.onPause();
+            pauseAudio();
         } else {
-            props.onPlay && props.onPlay();
+            playAudio();
         }
         setMusicOn(!musicOn);
     };
+
     const onAbout = () => {
         if (musicOn) {
-            props.onPause && props.onPause();
+            pauseAudio();
         }
         navigate('/')
     };
 
     React.useEffect(() => {
-        setMusicOn(!!props.bgAudioObject);
-    }, [props.bgAudioObject]);
+        setMusicOn(!!bgAudioObject);
+    }, [bgAudioObject]);
 
     return (
         <div className="main-menu-background-wrapper">

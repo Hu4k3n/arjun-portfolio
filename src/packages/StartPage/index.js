@@ -1,4 +1,4 @@
-import React, { use, useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './StartPage.css';
 import ProfileCard from '../ProfileCard';
@@ -8,19 +8,47 @@ import ScrollReveal from '../ScrollReveal';
 import UIButton from '../Button/UIButton';
 import { onResume, sendEmail } from '../utils/utils';
 import { contentArray, ProfileCardInfo } from '../utils/constant';
+import { AudioContext } from '../../context/AudioContext';
 
 function StartPage() {
     const navigate = useNavigate();
+    const { pauseAudio } = useContext(AudioContext);
 
     useEffect(() => {
-        const handleKeyDown = () => navigate('/main');
-        // window.addEventListener('keydown', handleKeyDown);
-        // return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [navigate]);
+        pauseAudio();
+    }, [pauseAudio]);
 
     const goToGame = () => {
         navigate('/main');
     };
+
+    const scrollBox = (value) => {
+        return (
+        <div style={{ height: `${value}vh` }}></div>
+        )
+    }
+
+        const scrollText = (text) => {
+        return (
+            <ScrollReveal
+                    baseOpacity={0}
+                    enableBlur={true}
+                    baseRotation={5}
+                    blurStrength={10}
+                    rotationEnd="top center"
+                    wordAnimationEnd="top center"
+                    containerClassName="centered-text"
+            >
+                    {text}
+            </ScrollReveal>
+        )
+    }
+
+    const startPageContent = (content) => {
+        return content.map((item, index) => (
+            scrollText(item)
+        ));
+    }
 
     const renderProfileCard = () => { 
         return (
@@ -36,34 +64,6 @@ function StartPage() {
                     onContactClick={() => sendEmail({to: ProfileCardInfo.email, subject: " ", body: " "})}
                 />
         )
-    }
-
-    const scrollBox = (value) => {
-        return (
-        <div style={{ height: `${value}vh` }}></div>
-        )
-    }
-
-    const scrollText = (text) => {
-        return (
-            <ScrollReveal
-                    baseOpacity={0}
-                    enableBlur={true}
-                    baseRotation={5}
-                    blurStrength={10}
-                    rotationEnd="top center" // Start animating when ProfileCard is off screen
-                    wordAnimationEnd="top center"
-                    containerClassName="centered-text"
-                >
-                    {text}
-                </ScrollReveal>
-        )
-    }
-
-    const startPageContent = (content) => {
-        return content.map((item, index) => (
-            scrollText(item)
-        ));
     }
 
     return (
@@ -92,7 +92,6 @@ function StartPage() {
                 <UIButton onClick={goToGame}>Open Hrkn World</UIButton>
                 {scrollBox(10)}
             </div>
-            
         </div>
     );
 }
