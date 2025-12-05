@@ -1,8 +1,10 @@
+import { getExp } from "./utils"
+
 export const contentArray = [
-    `Arjun Syam is a Full Stack Engineer with 3+ years of experience delivering scalable, high-impact web applications at Cisco.`,
-    `He specializes in React, TypeScript, and Node.js, with a strong track record of building AI-integrated tools and real-time monitoring systems that improve performance, accessibility, and reliability`,
+    `Arjun Syam is a Full Stack Engineer with ${getExp()}+ years of experience delivering scalable, high-impact web applications.`,
+    `He currently works at Cisco Systems as a Software Engineer, building UI components for Webex Contact Center solutions.`,
+    `He specializes in React, TypeScript, Javascript, with a strong track record of building AI-integrated tools and real-time monitoring systems that improve performance, accessibility, and reliability`,
     `He holds a B.Tech in Computer Science from NIT Calicut and previously interned at SAP`,
-    // `His work also spans cost optimization, multi-party conferencing, agent wellness automation, and incident management.`,
 ]
 
 export const ProfileCardInfo = {

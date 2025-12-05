@@ -8,3 +8,5 @@ export const sendEmail = ({ to, subject, body }) => {
   const mailto = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   window.location.href = mailto;
 };
+
+export const getExp = () => new Date().getFullYear() - 2022;
