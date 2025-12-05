@@ -18,7 +18,7 @@ function GodotGame() {
         if (!document.getElementById(godotScriptId)) {
             const script = document.createElement('script');
             script.id = godotScriptId;
-            script.src = '/index.js'; // CHANGED: now at public root
+            script.src = process.env.PUBLIC_URL + '/index.js'; // CHANGED: now at public root
             script.async = false;
             script.onload = () => {
                 // After engine is loaded, load the init script
@@ -35,7 +35,7 @@ function GodotGame() {
             if (!document.getElementById(initScriptId)) {
                 const script = document.createElement('script');
                 script.id = initScriptId;
-                script.src = '/init_godot_game.js';
+                script.src = process.env.PUBLIC_URL + '/init_godot_game.js';
                 script.onload = () => {
                     if (window.init_godot_game) window.init_godot_game();
                 };
