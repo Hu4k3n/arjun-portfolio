@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/arjun-portfolio/static/css/main.9ff9f489.css",
+    "main.js": "/arjun-portfolio/static/js/main.9311eb8d.js",
+    "static/js/453.6097658f.chunk.js": "/arjun-portfolio/static/js/453.6097658f.chunk.js",
+    "static/media/bgm.mp3": "/arjun-portfolio/static/media/bgm.17c3f7785ce7df8d7adf.mp3",
+    "static/media/avatar-pic.png": "/arjun-portfolio/static/media/avatar-pic.6d5c886fa5d37b9fc248.png",
+    "static/media/bgArtPoster.png": "/arjun-portfolio/static/media/bgArtPoster.ec47f825cf900e0e95c7.png",
+    "static/media/bgArt.mp4": "/arjun-portfolio/static/media/bgArt.275bd9b59fb627cd3883.mp4",
+    "static/media/cv.svg": "/arjun-portfolio/static/media/cv.ea25c164b54ab87b482b3881cda54955.svg",
+    "static/media/Instagram.svg": "/arjun-portfolio/static/media/Instagram.062f333918be06be07149b1c81e879dd.svg",
+    "static/media/Github.svg": "/arjun-portfolio/static/media/Github.35c7c6e3282cd621c2796874849b0159.svg",
+    "static/media/LinkedIN.svg": "/arjun-portfolio/static/media/LinkedIN.602be20adc907e5c77b27fba13e953d3.svg",
+    "index.html": "/arjun-portfolio/index.html",
+    "static/media/Youtube.svg": "/arjun-portfolio/static/media/Youtube.e63eb3ab65cf4fbb3630b6cdb7b2cd13.svg",
+    "main.9ff9f489.css.map": "/arjun-portfolio/static/css/main.9ff9f489.css.map",
+    "main.9311eb8d.js.map": "/arjun-portfolio/static/js/main.9311eb8d.js.map",
+    "453.6097658f.chunk.js.map": "/arjun-portfolio/static/js/453.6097658f.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.9ff9f489.css",
+    "static/js/main.9311eb8d.js"
+  ]
+}
