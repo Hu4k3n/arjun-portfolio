@@ -90,8 +90,8 @@ function StartPage() {
                 <Socials />
                 {startPageContent(contentArray)}
                 <h4 className="main-menu-title">Explore my portfolio through an island</h4>
-                <h4 className="main-menu-title">Let me know what you think!</h4>
                 <UIButton onClick={goToGame}>Explore</UIButton>
+                <h4 className="main-menu-title">Let me know what you think!</h4>
                 {scrollBox(20)}
             </div>
         </div>
