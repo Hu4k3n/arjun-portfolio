@@ -89,10 +89,10 @@ function StartPage() {
                 <UIButton onClick={onResume}>See my Resume</UIButton>
                 <Socials />
                 {startPageContent(contentArray)}
-                {scrollBox(10)}
                 <h4 className="main-menu-title">Explore my portfolio through an island</h4>
                 <h4 className="main-menu-title">Let me know what you think!</h4>
                 <UIButton onClick={goToGame}>Explore</UIButton>
+                {scrollBox(20)}
             </div>
         </div>
     );
