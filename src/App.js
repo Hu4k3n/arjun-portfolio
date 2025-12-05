@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { AudioProvider } from './context/AudioContext';
 import StartPage from './packages/StartPage';
 import MainMenu from './packages/MainMenu';
