@@ -6,7 +6,7 @@ import pic from '../../assets/avatar/avatar-pic.png'
 import Aurora from '../BgWaves';
 import ScrollReveal from '../ScrollReveal';
 import UIButton from '../Button/UIButton';
-import { onResume, sendEmail } from '../utils/utils';
+import { onResume, openLink } from '../utils/utils';
 import { contentArray, ProfileCardInfo } from '../utils/constant';
 import { AudioContext } from '../../context/AudioContext';
 import Socials from '../Socials';
@@ -62,7 +62,7 @@ function StartPage() {
                     avatarUrl={pic}
                     showUserInfo={false}
                     enableTilt={true}
-                    onContactClick={() => window.open(`${ProfileCardInfo.linkedIn}`, '_blank', 'noopener,noreferrer')}
+                    onContactClick={() => openLink(ProfileCardInfo.linkedIn)}
                 />
         )
     }

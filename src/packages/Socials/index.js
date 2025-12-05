@@ -6,6 +6,7 @@ import instagramIcon from '../../assets/socialIcons/Instagram.svg';
 import youtubeIcon from '../../assets/socialIcons/Youtube.svg';
 import { ProfileCardInfo } from '../utils/constant';
 import './Socials.css';
+import { openLink } from '../utils/utils';
 
 function Socials() {
     return (
@@ -14,25 +15,25 @@ function Socials() {
                 icon={githubIcon} 
                 alt="GitHub" 
                 className="icon-only"
-                onClick={() => window.open('https://github.com/Hu4k3n', '_blank', 'noopener,noreferrer')}
+                onClick={() => openLink(ProfileCardInfo.github)}
             />
             <SocialButton 
                 icon={linkedinIcon} 
                 alt="LinkedIn" 
                 className="icon-only"
-                onClick={() => window.open(ProfileCardInfo.linkedIn, '_blank', 'noopener,noreferrer')}
+                onClick={() => openLink(ProfileCardInfo.linkedIn)}
             />
             <SocialButton 
                 icon={instagramIcon} 
                 alt="Instagram" 
                 className="icon-only"
-                onClick={() => window.open('https://instagram.com/Hu4k3n', '_blank', 'noopener,noreferrer')}
+                onClick={() => openLink(ProfileCardInfo.instagram)}
             />
             <SocialButton 
                 icon={youtubeIcon} 
                 alt="YouTube" 
                 className="icon-only"
-                onClick={() => window.open('https://youtube.com/@Hu4k3n', '_blank', 'noopener,noreferrer')}
+                onClick={() => openLink(ProfileCardInfo.youtube)}
             />
         </div>
     );
