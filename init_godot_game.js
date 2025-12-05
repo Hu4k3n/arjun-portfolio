@@ -2,9 +2,9 @@
 // It exposes a function `init_godot_game()` that can be called from React to start the game.
 
 function init_godot_game() {
-  // Detect the base path - in production it will be /arjun-portfolio/, in dev it will be /
-  const basePath = document.querySelector('base')?.href || 
-                   (window.location.pathname.includes('/arjun-portfolio/') ? '/arjun-portfolio/' : '/');
+  // Get base path from the base tag (set by React's homepage in package.json)
+  const baseTag = document.querySelector('base');
+  const basePath = baseTag ? new URL(baseTag.href).pathname : '/';
   
   const GODOT_CONFIG = {
     "args":[],
