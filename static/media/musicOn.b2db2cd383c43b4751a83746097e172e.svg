@@ -1,0 +1,28 @@
+<svg
+  width="64"
+  height="64"
+  viewBox="0 0 64 64"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <!-- Speaker shape -->
+  <path
+    d="M26 20 L18 28 H10 V36 H18 L26 44 V20 Z"
+    fill="white"
+  />
+
+  <!-- Sound waves -->
+  <path
+    d="M38 24 Q46 32 38 40"
+    fill="none"
+    stroke="white"
+    stroke-width="4"
+    stroke-linecap="round"
+  />
+  <path
+    d="M44 20 Q56 32 44 44"
+    fill="none"
+    stroke="white"
+    stroke-width="4"
+    stroke-linecap="round"
+  />
+</svg>

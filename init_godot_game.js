@@ -5,7 +5,7 @@ function init_godot_game() {
   // Get base path from the base tag (set by React's homepage in package.json)
   const baseTag = document.querySelector('base');
   const basePath = baseTag ? new URL(baseTag.href).pathname : '/';
-  
+
   const GODOT_CONFIG = {
     "args":[],
     "canvasResizePolicy":1,
