@@ -17,9 +17,6 @@ function MainMenu() {
 
     const onPlay = () => {
         console.log("Play button clicked");
-        setTimeout(() => {
-            playAudio();
-        }, 3000)
         navigate('/game');
     };
 
