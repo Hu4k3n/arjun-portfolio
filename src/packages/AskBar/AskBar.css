@@ -20,10 +20,12 @@
     transition: width 480ms var(--ask-bar-ease);
 }
 
-/* The library sets user-select: none on every glass container, but answers are meant to be copied. */
+/* Keep glass content non-selectable (library default); inputs stay editable. */
+.ask-bar,
 .ask-bar .ask-bar-card,
 .ask-bar .ask-bar-card-content {
-    user-select: text;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .ask-bar .ask-bar-card-content {
@@ -220,6 +222,8 @@
     font-weight: 500;
     line-height: 24px;
     letter-spacing: -0.022em;
+    user-select: text;
+    -webkit-user-select: text;
 }
 
 .ask-bar-input::placeholder {
