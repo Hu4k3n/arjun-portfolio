@@ -83,8 +83,8 @@ function StartPage() {
                 {scrollBox(10)}
                 {renderProfileCard()}
                 <h1 className="main-menu-title">Hello there!</h1>
+                <AskBar />
                 <UIGlassButton onClick={onResume}>See my Resume</UIGlassButton>
-                {/* <AskBar /> */}
                 {scrollBox(5)}
                 <Socials glass />
                 {scrollBox(5)}

@@ -26,18 +26,3 @@ export const Buttons = {
 }
 
 export const RESUME_URL = 'https://drive.google.com/drive/folders/1Hzh_gnoERSSKut7Guy8KzvXpOCws7o83?usp=sharing';
-
-export const askBar = {
-    label: 'Ask anything about Arjun',
-    placeholder: 'Ask me anything...',
-    thinking: 'Thinking',
-    disclaimer: 'AI-generated — may not be perfectly accurate.',
-    retry: 'Try again',
-    clear: 'Clear',
-    submit: 'Ask',
-    suggestions: [
-        'What does Arjun do at Cisco?',
-        'Which tech stack does he use?',
-        'Tell me about his AI projects',
-    ],
-};
