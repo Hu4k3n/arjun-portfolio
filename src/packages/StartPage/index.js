@@ -12,10 +12,12 @@ import { AudioContext } from '../../context/AudioContext';
 import Socials from '../Socials';
 import UIGlassButton from '../Button/UIGlassButton';
 import AskBar from '../AskBar';
+import { isWebGpuSupported } from '../../services/webllm';
 
 function StartPage() {
     const navigate = useNavigate();
     const { pauseAudio } = useContext(AudioContext);
+    const showAskBar = isWebGpuSupported();
 
     useEffect(() => {
         pauseAudio();
@@ -83,7 +85,7 @@ function StartPage() {
                 {scrollBox(10)}
                 {renderProfileCard()}
                 <h1 className="main-menu-title">Hello there!</h1>
-                <AskBar />
+                {showAskBar ? <AskBar /> : null}
                 <UIGlassButton onClick={onResume}>See my Resume</UIGlassButton>
                 {scrollBox(5)}
                 <Socials glass />

@@ -24,19 +24,14 @@ Then open **http://localhost:3000/arjun-portfolio/** — note the path, not bare
 
 ### Optional: the Ask bar
 
-The Ask bar posts questions to a backend you supply. Copy the example env file and point it
-at your own endpoint:
+The Ask bar runs a small LLM **entirely in the browser** via
+[`@mlc-ai/web-llm`](https://github.com/mlc-ai/web-llm) (WebGPU + a web worker). No backend
+and no API keys.
 
-```bash
-cp .env.example .env.local
-npm run mock:ask     # a local stub on :8787, for development
-```
-
-The contract is `POST { "question": "..." }` → `200 { "answer": "..." }`.
-
-Every `REACT_APP_*` value is inlined into the public JS bundle at build time, so never put a
-provider API key or any other secret in `.env.local`. The LLM key belongs on your backend,
-which calls the model server-side.
+- **One question → one answer.** Nothing is held between asks (no chat history, no context files).
+- Replies are capped at **100 words**; generation is interrupted if the model exceeds that.
+- Requires **Chrome or Edge 113+** (WebGPU). Model download starts when the start page loads; later visits use the browser cache.
+- Implementation notes: `docs/webllm-askbar-implementation.md`
 
 ## Scripts
 
@@ -44,7 +39,6 @@ which calls the model server-side.
 | --- | --- |
 | `npm run dev` | Development server with hot reload, at `/arjun-portfolio/` |
 | `npm run build` | Production build into `build/` |
-| `npm run mock:ask` | Local stub backend for the Ask bar, on port 8787 |
 | `npm test` | Test runner in watch mode |
 | `npm start` | Serves `build/` at the domain root — see the caveat below |
 
@@ -170,11 +164,13 @@ rebasing them onto `main`.
 
 ```
 public/            Godot export (index.js, index.wasm, index.pck, init_godot_game.js) + icons
-scripts/           mock-ask-server.js, the local Ask bar stub
+scripts/           (optional tooling)
 src/
   App.js           HashRouter routes: / (start), /main (menu), /game
   assets/          images, audio and video, imported through webpack
   context/         shared React context (background audio)
+  hooks/           React hooks (Ask bar WebLLM bridge)
+  services/        standalone services (in-browser WebLLM)
   packages/
     AskBar/        the ask-anything input and answer panel
     GameInit/      Godot canvas, loader, in-game UI and how-to-play
@@ -185,5 +181,6 @@ src/
     Button/        button variants (plain, glass, icon, back, game)
     BgWaves/       OGL background effect
     ScrollReveal/  scroll-triggered reveal animation
-    utils/         constants and the Ask API client
+    utils/         constants and helpers
+docs/              implementation notes (e.g. Ask bar × WebLLM)
 ```

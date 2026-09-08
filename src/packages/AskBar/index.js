@@ -1,21 +1,20 @@
 import React, { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { GlassCard } from 'react-glass-ui';
+import { useAskLlm } from '../../hooks/useAskLlm';
+import { MAX_INPUT_CHARS } from '../../services/webllm';
 import AskBarLoading from './AskBarLoading';
 import './AskBar.css';
 
-const MAX_LENGTH = 150;
+const MAX_LENGTH = MAX_INPUT_CHARS;
 const LINE_STAGGER_MS = 140;
 const LINE_REVEAL_OFFSET_MS = 180;
-const LOADING_MIN_MS = 3000;
 const WIDTH_MAX_RATIO = 0.5;
 const PLACEHOLDER = 'Ask me anything...';
-
-const PLACEHOLDER_REPLY = [
-    'Thanks for asking — this is a placeholder reply.',
-    '',
-    'Once the model backend is connected, answers will land here',
-    'as the glass blob expands and each line fades in.',
-].join('\n');
+/** Reserved trailing slot so the plane stays docked while text grows. */
+const SUBMIT_SPACE = 40;
+const FORM_LEFT_PAD = 20;
+const SEARCH_ICON = 19;
+const FORM_GAP = 12;
 
 const glassIdle = {
     blur: 3,
@@ -114,14 +113,47 @@ function maxContentWidth() {
     return Math.floor(window.innerWidth * WIDTH_MAX_RATIO);
 }
 
+function loadingLabel(llm) {
+    if (llm.status === 'loading') {
+        return 'Downloading model';
+    }
+    return 'Thinking';
+}
+
+function ModelReadyProgress({ visible, progress }) {
+    const hasProgress = typeof progress === 'number';
+    const percent = hasProgress ? Math.max(0, Math.min(100, Math.round(progress * 100))) : null;
+
+    return (
+        <div
+            className={`ask-bar-ready ${visible ? 'is-visible' : ''}`}
+            role="status"
+            aria-live="polite"
+            aria-busy={visible}
+            aria-hidden={!visible}
+        >
+            <div className="ask-bar-ready-track" aria-hidden="true">
+                <div
+                    className={`ask-bar-ready-fill ${hasProgress ? '' : 'is-indeterminate'}`.trim()}
+                    style={hasProgress ? { width: `${percent}%` } : undefined}
+                />
+            </div>
+            <span className="ask-bar-ready-label">
+                Getting ready{percent != null ? ` · ${percent}%` : '…'}
+            </span>
+        </div>
+    );
+}
+
 function AskBar({ className = '' }) {
     const panelId = useId();
+    const { ask, cancel, status: llmStatus, statusText, loadProgress } = useAskLlm();
     const [query, setQuery] = useState('');
     const [question, setQuestion] = useState('');
+    const [answer, setAnswer] = useState('');
     const [status, setStatus] = useState('idle');
     const [panelHeight, setPanelHeight] = useState(0);
     const [barWidth, setBarWidth] = useState(null);
-    const [inputWidth, setInputWidth] = useState(0);
     const [animateWidth, setAnimateWidth] = useState(false);
 
     const inputRef = useRef(null);
@@ -129,34 +161,20 @@ function AskBar({ className = '' }) {
     const formRef = useRef(null);
     const loadingRef = useRef(null);
     const panelRef = useRef(null);
-    const loadTimerRef = useRef(null);
+    const placeholderWidthRef = useRef(0);
 
     const isLoading = status === 'loading';
     const isAnswer = status === 'answer';
     const hasContent = query.trim().length > 0;
     const showClose = hasContent || isLoading || isAnswer;
+    const showSubmit = hasContent && !isAnswer;
+    const llm = { status: llmStatus, statusText, loadProgress };
+    const showModelReady = llmStatus === 'loading' && !isLoading;
 
     const glassProps = isAnswer ? glassBlob : glassIdle;
     const cardClass = ['ask-bar-card', isAnswer ? 'is-blob' : '', isAnswer ? 'is-open' : '']
         .filter(Boolean)
         .join(' ');
-
-    const measureInputWidth = useCallback(() => {
-        const sizer = sizerRef.current;
-        if (!sizer) {
-            return;
-        }
-
-        const textW = Math.ceil(sizer.getBoundingClientRect().width) + 2;
-        const cap = maxContentWidth();
-        // Keep search icon, gaps, submit, and close affordance inside the bar.
-        const rightPad = showClose ? 44 : 14;
-        const submitSpace = hasContent && !isAnswer ? 40 : 0; // 12 gap + 28 button
-        const chrome = 20 + 19 + 12 + submitSpace + rightPad;
-        const maxInput = Math.max(48, cap - chrome);
-
-        setInputWidth(Math.min(textW, maxInput));
-    }, [hasContent, isAnswer, showClose]);
 
     const measureBarWidth = useCallback(() => {
         const cap = maxContentWidth();
@@ -179,12 +197,22 @@ function AskBar({ className = '' }) {
             if (panelW >= cap - 1) {
                 natural = cap;
             }
-        } else if (formRef.current) {
+        } else {
+            const sizer = sizerRef.current;
+            if (!sizer) {
+                return;
+            }
+
+            const textW = Math.ceil(sizer.getBoundingClientRect().width) + 2;
+            if (!query) {
+                placeholderWidthRef.current = textW;
+            }
+
             const rightPad = showClose ? 44 : 14;
-            const submitSpace = hasContent && !isAnswer ? 40 : 0;
-            const chrome = 20 + 19 + 12 + submitSpace + rightPad;
-            const textW = inputWidth || Math.ceil(sizerRef.current?.getBoundingClientRect().width || 0) + 2;
-            natural = chrome + textW;
+            const submitSpace = showSubmit ? SUBMIT_SPACE : 0;
+            const chrome = FORM_LEFT_PAD + SEARCH_ICON + FORM_GAP + submitSpace + rightPad;
+            const contentW = Math.max(textW, placeholderWidthRef.current || textW);
+            natural = chrome + contentW;
         }
 
         if (!natural) {
@@ -192,15 +220,11 @@ function AskBar({ className = '' }) {
         }
 
         setBarWidth(Math.min(Math.ceil(natural), cap));
-    }, [hasContent, inputWidth, isAnswer, isLoading, showClose]);
-
-    useLayoutEffect(() => {
-        measureInputWidth();
-    }, [query, measureInputWidth]);
+    }, [isAnswer, isLoading, query, showClose, showSubmit]);
 
     useLayoutEffect(() => {
         measureBarWidth();
-    }, [measureBarWidth, query, question, status, panelHeight, inputWidth]);
+    }, [measureBarWidth, query, question, answer, status, panelHeight, llm.statusText, llm.loadProgress]);
 
     useEffect(() => {
         if (!animateWidth) {
@@ -212,12 +236,11 @@ function AskBar({ className = '' }) {
 
     useEffect(() => {
         const onResize = () => {
-            measureInputWidth();
             measureBarWidth();
         };
         window.addEventListener('resize', onResize);
         return () => window.removeEventListener('resize', onResize);
-    }, [measureBarWidth, measureInputWidth]);
+    }, [measureBarWidth]);
 
     useEffect(() => {
         const node = panelRef.current;
@@ -236,26 +259,15 @@ function AskBar({ className = '' }) {
         const observer = new ResizeObserver(measure);
         observer.observe(node);
         return () => observer.disconnect();
-    }, [isAnswer, question, barWidth]);
-
-    useEffect(
-        () => () => {
-            if (loadTimerRef.current) {
-                clearTimeout(loadTimerRef.current);
-            }
-        },
-        [],
-    );
+    }, [isAnswer, question, answer, barWidth]);
 
     const collapse = useCallback(() => {
-        if (loadTimerRef.current) {
-            clearTimeout(loadTimerRef.current);
-            loadTimerRef.current = null;
-        }
+        cancel();
         setAnimateWidth(true);
         setStatus('idle');
         setQuestion('');
-    }, []);
+        setAnswer('');
+    }, [cancel]);
 
     useEffect(() => {
         if (!isLoading && !isAnswer) {
@@ -272,7 +284,7 @@ function AskBar({ className = '' }) {
         return () => window.removeEventListener('keydown', onEscape);
     }, [isLoading, isAnswer, collapse]);
 
-    const onSubmit = (event) => {
+    const onSubmit = async (event) => {
         event.preventDefault();
         const prompt = query.trim();
         if (!prompt || isLoading) {
@@ -282,19 +294,25 @@ function AskBar({ className = '' }) {
             return;
         }
 
-        if (loadTimerRef.current) {
-            clearTimeout(loadTimerRef.current);
-        }
-
+        // Replace any previous Q&A — no held context.
+        setAnswer('');
         setQuestion(prompt);
         setAnimateWidth(true);
         setStatus('loading');
 
-        loadTimerRef.current = setTimeout(() => {
-            loadTimerRef.current = null;
+        try {
+            const reply = await ask(prompt);
+            setAnswer(reply);
             setAnimateWidth(true);
             setStatus('answer');
-        }, LOADING_MIN_MS);
+        } catch (cause) {
+            if (cause?.message === 'cancelled') {
+                return;
+            }
+            setAnswer(cause?.message || "Couldn't generate an answer. Try again.");
+            setAnimateWidth(true);
+            setStatus('answer');
+        }
     };
 
     const onClear = useCallback(() => {
@@ -316,7 +334,6 @@ function AskBar({ className = '' }) {
         const next = event.target.value;
 
         if (isAnswer) {
-            // Dismiss the answer like clear, but keep the user's new keystrokes.
             collapse();
             if (next.startsWith(query) && next.length > query.length) {
                 setQuery(next.slice(query.length).slice(0, MAX_LENGTH));
@@ -326,7 +343,7 @@ function AskBar({ className = '' }) {
             return;
         }
 
-        setQuery(next);
+        setQuery(next.slice(0, MAX_LENGTH));
     };
 
     const onKeyDown = (event) => {
@@ -391,7 +408,7 @@ function AskBar({ className = '' }) {
                 <div className="ask-bar-stage">
                     <form
                         ref={formRef}
-                        className={`ask-bar-form ${isLoading ? 'is-exiting' : ''}`}
+                        className={`ask-bar-form ${showSubmit ? 'has-submit' : ''} ${isLoading ? 'is-exiting' : ''}`.trim()}
                         role="search"
                         aria-hidden={isLoading}
                         onSubmit={onSubmit}
@@ -412,24 +429,29 @@ function AskBar({ className = '' }) {
                             spellCheck="false"
                             aria-controls={panelId}
                             tabIndex={isLoading ? -1 : 0}
-                            style={{ width: inputWidth || undefined, maxWidth: '100%' }}
                             onChange={onQueryChange}
                             onKeyDown={onKeyDown}
                             onPaste={onPaste}
                         />
-                        {hasContent && !isAnswer && (
+                        {showSubmit && (
                             <button
                                 type="submit"
                                 className="ask-bar-submit"
                                 aria-label="Ask"
                                 tabIndex={isLoading ? -1 : 0}
+                                disabled={isLoading}
                             >
                                 <SubmitIcon />
                             </button>
                         )}
                     </form>
 
-                    <AskBarLoading ref={loadingRef} active={isLoading} />
+                    <AskBarLoading
+                        ref={loadingRef}
+                        active={isLoading}
+                        label={loadingLabel(llm)}
+                        progress={llm.status === 'loading' ? llm.loadProgress : null}
+                    />
                 </div>
 
                 <div
@@ -441,11 +463,13 @@ function AskBar({ className = '' }) {
                     <div className="ask-bar-panel-inner" ref={panelRef}>
                         <p className="ask-bar-question">{question}</p>
                         <div className="ask-bar-body" aria-live="polite">
-                            {isAnswer && <FadingAnswer text={PLACEHOLDER_REPLY} />}
+                            {isAnswer && <FadingAnswer text={answer} />}
                         </div>
                     </div>
                 </div>
             </GlassCard>
+
+            <ModelReadyProgress visible={showModelReady} progress={loadProgress} />
         </div>
     );
 }

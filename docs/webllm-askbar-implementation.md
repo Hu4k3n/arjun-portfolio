@@ -245,8 +245,9 @@ Thin React bridge (simpler than reference `useLlmEngine` + `useChatWorkspace`):
 
 **Load policy for portfolio start page:**
 
-- Prefer **lazy load on first submit** (or on StartPage mount after idle) so the landing animation is not blocked by a multi‑MB download.
-- Document the choice in code comments; default recommendation: **load on first ask**, show progress inside existing `AskBarLoading` (“Thinking” → “Downloading model… 42%” when applicable).
+- **Prefetch on mount** — `useAskLlm` starts downloading as soon as AskBar mounts on the start page.
+- If the user asks before the download finishes, submit waits on the in-flight load and shows download progress in `AskBarLoading`.
+- Cancel during a reply does not abort a background model download.
 
 **No held context:**
 
@@ -340,7 +341,7 @@ loading → error (WebGPU missing, load failure, interrupt)
 
 1. Add dependency + `services/webllm/{config,worker,engine,prompt,guards,index}`.
 2. Prove load + one-shot stream in a throwaway console or minimal harness (WebGPU machine).
-3. Add `useAskLlm` with lazy load + cancel.
+3. Add `useAskLlm` with prefetch-on-mount + cancel.
 4. Wire AskBar submit / cancel / unsupported states; remove placeholder timer.
 5. Enforce 100-word interrupt path with a unit test on guards + a manual stream check.
 6. Update README; delete or ignore obsolete mock Ask server references.
@@ -362,6 +363,5 @@ loading → error (WebGPU missing, load failure, interrupt)
 
 - Model selector
 - Streaming token-by-token into `FadingAnswer`
-- Prefetch model on StartPage idle
 - Richer safety classifier
 - Offline indicator when cache is warm

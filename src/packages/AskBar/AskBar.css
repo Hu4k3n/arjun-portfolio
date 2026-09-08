@@ -94,6 +94,7 @@
 }
 
 .ask-bar-form {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -109,10 +110,18 @@
         transform 420ms var(--ask-bar-ease);
 }
 
+.ask-bar-form.has-submit {
+    padding-right: 46px;
+}
+
 .ask-bar.has-close .ask-bar-form,
 .ask-bar.has-close .ask-bar-loading,
 .ask-bar.has-close .ask-bar-panel-inner {
     padding-right: var(--ask-bar-close-space);
+}
+
+.ask-bar.has-close .ask-bar-form.has-submit {
+    padding-right: calc(var(--ask-bar-close-space) + 32px);
 }
 
 .ask-bar-form.is-exiting {
@@ -231,13 +240,16 @@
 }
 
 .ask-bar-submit {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    z-index: 5;
     display: flex;
-    flex: none;
-    flex-shrink: 0;
     align-items: center;
     justify-content: center;
     width: 28px;
     height: 28px;
+    margin-top: -14px;
     padding: 0;
     border: 0;
     background: none;
@@ -246,6 +258,10 @@
     transition: transform 200ms var(--ask-bar-ease),
         opacity 200ms ease, color 200ms ease;
     -webkit-tap-highlight-color: transparent;
+}
+
+.ask-bar.has-close .ask-bar-submit {
+    right: calc(var(--ask-bar-close-space) - 2px);
 }
 
 .ask-bar-submit svg {
@@ -335,6 +351,90 @@
     animation-delay: 0.3s;
 }
 
+.ask-bar-progress {
+    color: rgba(165, 180, 252, 0.95);
+    font-variant-numeric: tabular-nums;
+}
+
+.ask-bar-loading-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    min-width: 148px;
+}
+
+.ask-bar-loading-track,
+.ask-bar-ready-track {
+    width: 100%;
+    height: 3px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.ask-bar-loading-track {
+    min-width: 132px;
+}
+
+.ask-bar-loading-fill,
+.ask-bar-ready-fill {
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #67e8f9 0%, #a78bfa 55%, #f472b6 100%);
+    transition: width 220ms ease;
+}
+
+.ask-bar-ready {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    max-width: 100%;
+    max-height: 0;
+    margin: 0;
+    padding: 0 4px;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-4px);
+    pointer-events: none;
+    transition:
+        opacity 320ms ease,
+        transform 360ms var(--ask-bar-ease),
+        max-height 360ms var(--ask-bar-ease),
+        margin 360ms var(--ask-bar-ease);
+}
+
+.ask-bar-ready.is-visible {
+    max-height: 36px;
+    margin-top: -4px;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.ask-bar-ready-label {
+    color: rgba(255, 255, 255, 0.48);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.ask-bar-ready-fill.is-indeterminate {
+    width: 36%;
+    animation: ask-bar-ready-slide 1.15s ease-in-out infinite;
+}
+
+@keyframes ask-bar-ready-slide {
+    0% {
+        transform: translateX(-120%);
+    }
+    100% {
+        transform: translateX(320%);
+    }
+}
+
 @keyframes ask-bar-dot-pulse {
     0%,
     80%,
@@ -408,6 +508,18 @@
         padding-right: 40px;
     }
 
+    .ask-bar-form.has-submit {
+        padding-right: 42px;
+    }
+
+    .ask-bar.has-close .ask-bar-form.has-submit {
+        padding-right: 72px;
+    }
+
+    .ask-bar.has-close .ask-bar-submit {
+        right: 38px;
+    }
+
     .ask-bar-close {
         top: 10px;
         right: 10px;
@@ -437,18 +549,28 @@
     .ask-bar-submit,
     .ask-bar .ask-bar-card,
     .ask-bar-form,
-    .ask-bar-loading {
+    .ask-bar-loading,
+    .ask-bar-ready,
+    .ask-bar-loading-fill,
+    .ask-bar-ready-fill {
         transition: none;
     }
 
     .ask-bar-form.is-exiting,
-    .ask-bar-loading {
+    .ask-bar-loading,
+    .ask-bar-ready {
         transform: none;
     }
 
     .ask-bar .ask-bar-card.is-blob,
-    .ask-bar-thinking-dots span {
+    .ask-bar-thinking-dots span,
+    .ask-bar-ready-fill.is-indeterminate {
         animation: none;
+    }
+
+    .ask-bar-ready-fill.is-indeterminate {
+        width: 40%;
+        transform: none;
     }
 
     .ask-bar-thinking-dots span {
