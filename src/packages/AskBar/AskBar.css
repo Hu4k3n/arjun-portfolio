@@ -412,6 +412,18 @@
     transform: translateY(0);
 }
 
+.ask-bar.is-warming {
+    width: min(220px, 50vw);
+    max-width: 50vw;
+    gap: 0;
+}
+
+.ask-bar.is-warming .ask-bar-ready.is-visible {
+    max-height: 40px;
+    margin-top: 0;
+    padding: 0;
+}
+
 .ask-bar-ready-label {
     color: rgba(255, 255, 255, 0.48);
     font-size: 11px;

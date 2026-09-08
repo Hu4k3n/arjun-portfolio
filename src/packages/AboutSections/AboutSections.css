@@ -1,0 +1,129 @@
+.about-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    width: 100%;
+    max-width: 36rem;
+}
+
+.about-glass-card {
+    position: relative;
+    width: 100% !important;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.about-glass-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    padding: 1px;
+    border-radius: inherit;
+    background: var(--portfolio-outline-gradient,
+        linear-gradient(135deg, #67e8f9 0%, #8b5cf6 55%, #ec4899 100%));
+    opacity: 0.78;
+    pointer-events: none;
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+}
+
+.about-glass-card-content {
+    width: 100% !important;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-align: left;
+}
+
+.about-glass-title {
+    margin: 0 0 1rem;
+    font-family: var(--portfolio-font, 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+}
+
+.about-glass-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    min-width: 0;
+}
+
+.about-glass-entry {
+    min-width: 0;
+}
+
+.about-glass-entry-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+    min-width: 0;
+}
+
+.about-glass-role {
+    font-family: var(--portfolio-font, 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-size: 0.98rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: #fff;
+    overflow-wrap: anywhere;
+}
+
+.about-glass-dates {
+    font-family: var(--portfolio-font, 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    color: rgba(255, 255, 255, 0.62);
+    overflow-wrap: anywhere;
+}
+
+.about-glass-org {
+    display: block;
+    margin-top: 0.2rem;
+    font-family: var(--portfolio-font, 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.82);
+    overflow-wrap: anywhere;
+}
+
+.about-glass-detail {
+    margin: 0.35rem 0 0;
+    font-family: var(--portfolio-font, 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-size: 0.84rem;
+    font-weight: 400;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.68);
+    overflow-wrap: anywhere;
+}
+
+.about-glass-highlights {
+    margin: 0.55rem 0 0;
+    padding: 0 0 0 1.05rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    list-style: disc;
+}
+
+.about-glass-highlight {
+    font-family: var(--portfolio-font, 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-size: 0.8rem;
+    font-weight: 400;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.66);
+    overflow-wrap: anywhere;
+}

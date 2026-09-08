@@ -1,23 +1,26 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './StartPage.css';
 import ProfileCard from '../ProfileCard';
 import pic from '../../assets/avatar/avatar-pic.png'
 import Aurora from '../BgWaves';
-import ScrollReveal from '../ScrollReveal';
 import UIButton from '../Button/UIButton';
 import { onResume, openLink } from '../utils/utils';
-import { contentArray, ProfileCardInfo } from '../utils/constant';
+import { aboutEducation, aboutExperience, ProfileCardInfo } from '../utils/constant';
 import { AudioContext } from '../../context/AudioContext';
 import Socials from '../Socials';
 import UIGlassButton from '../Button/UIGlassButton';
 import AskBar from '../AskBar';
+import GlassNav from '../GlassNav';
+import AboutSections from '../AboutSections';
 import { isWebGpuSupported } from '../../services/webllm';
 
 function StartPage() {
     const navigate = useNavigate();
     const { pauseAudio } = useContext(AudioContext);
     const showAskBar = isWebGpuSupported();
+    const [activeSection, setActiveSection] = useState('home');
+    const [askReady, setAskReady] = useState(false);
 
     useEffect(() => {
         pauseAudio();
@@ -26,34 +29,6 @@ function StartPage() {
     const goToGame = () => {
         navigate('/main');
     };
-
-    const scrollBox = (value) => {
-        return (
-        <div style={{ height: `${value}vh` }}></div>
-        )
-    }
-
-        const scrollText = (text) => {
-        return (
-            <ScrollReveal
-                    baseOpacity={0}
-                    enableBlur={true}
-                    baseRotation={5}
-                    blurStrength={10}
-                    rotationEnd="top center"
-                    wordAnimationEnd="top center"
-                    containerClassName="centered-text"
-            >
-                    {text}
-            </ScrollReveal>
-        )
-    }
-
-    const startPageContent = (content) => {
-        return content.map((item, index) => (
-            scrollText(item)
-        ));
-    }
 
     const renderProfileCard = () => { 
         return (
@@ -81,25 +56,60 @@ function StartPage() {
                 speed={0.5}
                 />
             </div>
+            <GlassNav active={activeSection} onChange={setActiveSection} />
             <div className="start-page-content">
-                {scrollBox(10)}
-                {renderProfileCard()}
-                <h1 className="main-menu-title">Hello there!</h1>
-                {showAskBar ? <AskBar /> : null}
-                <UIGlassButton onClick={onResume}>See my Resume</UIGlassButton>
-                {scrollBox(5)}
-                <Socials glass />
-                {scrollBox(5)}
-                {startPageContent(contentArray)}
-                <h4 className="main-menu-title">Explore my portfolio through an island</h4>
-                <UIButton onClick={goToGame}>Explore</UIButton>
-                <h4 className="main-menu-title">Let me know what you think!</h4>
-                {scrollBox(20)}
+                {activeSection === 'home' && (
+                    <section
+                        id="nav-panel-home"
+                        role="tabpanel"
+                        aria-labelledby="nav-tab-home"
+                        className="start-page-panel"
+                    >
+                        {renderProfileCard()}
+                        <h1 className="main-menu-title">Hello there!</h1>
+                        {showAskBar ? (
+                            <>
+                                <AskBar onReadyChange={setAskReady} />
+                                {askReady ? (
+                                    <p className="ask-bar-disclaimer">
+                                        Powered by a small on-device LLM via WebGPU. It can make mistakes.
+                                    </p>
+                                ) : null}
+                            </>
+                        ) : null}
+                        <UIGlassButton onClick={onResume}>See my Resume</UIGlassButton>
+                        <Socials glass />
+                    </section>
+                )}
+
+                {activeSection === 'explore' && (
+                    <section
+                        id="nav-panel-explore"
+                        role="tabpanel"
+                        aria-labelledby="nav-tab-explore"
+                        className="start-page-panel"
+                    >
+                        <h4 className="main-menu-title">Explore my portfolio through an island</h4>
+                        <UIButton onClick={goToGame}>Explore</UIButton>
+                    </section>
+                )}
+
+                {activeSection === 'about' && (
+                    <section
+                        id="nav-panel-about"
+                        role="tabpanel"
+                        aria-labelledby="nav-tab-about"
+                        className="start-page-panel start-page-panel--about"
+                    >
+                        <AboutSections
+                            education={aboutEducation}
+                            experience={aboutExperience}
+                        />
+                    </section>
+                )}
             </div>
         </div>
     );
 }
 
 export default StartPage;
-
-

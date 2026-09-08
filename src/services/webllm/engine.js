@@ -12,6 +12,9 @@ import { getSystemPrompt } from './prompt';
 /**
  * Owns one WebLLM worker + engine for a load cycle.
  * Single-turn only: each streamReply sends system + current question.
+ *
+ * Avoid calling interruptGenerate when idle — WebLLM can leave the engine
+ * stuck so the next completion returns empty (mlc-ai/web-llm#447).
  */
 export class WebLlmEngine {
     constructor() {
@@ -21,6 +24,8 @@ export class WebLlmEngine {
         this.disposed = false;
         this.loadChain = Promise.resolve();
         this.onProgress = null;
+        /** True while a completions stream is active. */
+        this.generating = false;
     }
 
     load(modelId = DEFAULT_MODEL_ID, onProgress) {
@@ -89,7 +94,8 @@ export class WebLlmEngine {
     }
 
     /**
-     * Yields content deltas. Interrupts and stops when output exceeds MAX_OUTPUT_WORDS.
+     * Yields content deltas. Soft-stops yielding past MAX_OUTPUT_WORDS without
+     * interruptGenerate (drains the stream instead) so the next ask still works.
      * @param {{ question: string }} request
      */
     async *streamReply({ question }) {
@@ -102,43 +108,55 @@ export class WebLlmEngine {
             { role: 'user', content: question },
         ];
 
-        const stream = await this.engine.chat.completions.create({
-            messages,
-            temperature: CHAT_TEMPERATURE,
-            max_tokens: MAX_TOKENS,
-            stream: true,
-        });
-
+        this.generating = true;
         let text = '';
 
-        for await (const chunk of stream) {
-            if (this.disposed) {
-                break;
-            }
+        try {
+            const stream = await this.engine.chat.completions.create({
+                messages,
+                temperature: CHAT_TEMPERATURE,
+                max_tokens: MAX_TOKENS,
+                stream: true,
+            });
 
-            const delta = chunk.choices?.[0]?.delta?.content;
-            if (!delta) {
-                continue;
-            }
+            let stopYielding = false;
 
-            const next = text + delta;
-            if (countWords(next) > MAX_OUTPUT_WORDS) {
-                this.interrupt();
-                break;
-            }
+            for await (const chunk of stream) {
+                if (this.disposed) {
+                    break;
+                }
 
-            text = next;
-            yield delta;
+                // Past the word cap: keep draining so the runtime lock releases,
+                // but do not interruptGenerate (breaks later asks).
+                if (stopYielding) {
+                    continue;
+                }
+
+                const delta = chunk.choices?.[0]?.delta?.content;
+                if (!delta) {
+                    continue;
+                }
+
+                const next = text + delta;
+                if (countWords(next) > MAX_OUTPUT_WORDS) {
+                    stopYielding = true;
+                    continue;
+                }
+
+                text = next;
+                yield delta;
+            }
+        } finally {
+            this.generating = false;
+            try {
+                await this.engine?.resetChat?.();
+            } catch {
+                // Best-effort hygiene; never keep turns in messages either way.
+            }
         }
 
         if (!String(text).trim()) {
             yield EMPTY_ANSWER_FALLBACK;
-        }
-
-        try {
-            await this.engine.resetChat();
-        } catch {
-            // Best-effort hygiene; never keep turns in messages either way.
         }
     }
 
@@ -158,6 +176,9 @@ export class WebLlmEngine {
     }
 
     interrupt() {
+        if (!this.generating) {
+            return;
+        }
         try {
             this.engine?.interruptGenerate?.();
         } catch {

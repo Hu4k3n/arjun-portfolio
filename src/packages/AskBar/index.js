@@ -145,7 +145,7 @@ function ModelReadyProgress({ visible, progress }) {
     );
 }
 
-function AskBar({ className = '' }) {
+function AskBar({ className = '', onReadyChange }) {
     const panelId = useId();
     const { ask, cancel, status: llmStatus, statusText, loadProgress } = useAskLlm();
     const [query, setQuery] = useState('');
@@ -163,13 +163,19 @@ function AskBar({ className = '' }) {
     const panelRef = useRef(null);
     const placeholderWidthRef = useRef(0);
 
+    const modelReady = llmStatus === 'ready' || llmStatus === 'replying';
+    const showWarmupProgress = llmStatus === 'idle' || llmStatus === 'loading';
     const isLoading = status === 'loading';
     const isAnswer = status === 'answer';
     const hasContent = query.trim().length > 0;
     const showClose = hasContent || isLoading || isAnswer;
     const showSubmit = hasContent && !isAnswer;
     const llm = { status: llmStatus, statusText, loadProgress };
-    const showModelReady = llmStatus === 'loading' && !isLoading;
+
+    useEffect(() => {
+        onReadyChange?.(modelReady);
+        return () => onReadyChange?.(false);
+    }, [modelReady, onReadyChange]);
 
     const glassProps = isAnswer ? glassBlob : glassIdle;
     const cardClass = ['ask-bar-card', isAnswer ? 'is-blob' : '', isAnswer ? 'is-open' : '']
@@ -177,6 +183,10 @@ function AskBar({ className = '' }) {
         .join(' ');
 
     const measureBarWidth = useCallback(() => {
+        if (!modelReady) {
+            return;
+        }
+
         const cap = maxContentWidth();
         let natural = 0;
 
@@ -220,11 +230,11 @@ function AskBar({ className = '' }) {
         }
 
         setBarWidth(Math.min(Math.ceil(natural), cap));
-    }, [isAnswer, isLoading, query, showClose, showSubmit]);
+    }, [isAnswer, isLoading, modelReady, query, showClose, showSubmit]);
 
     useLayoutEffect(() => {
         measureBarWidth();
-    }, [measureBarWidth, query, question, answer, status, panelHeight, llm.statusText, llm.loadProgress]);
+    }, [measureBarWidth, query, question, answer, status, panelHeight, llm.statusText, llm.loadProgress, modelReady]);
 
     useEffect(() => {
         if (!animateWidth) {
@@ -307,6 +317,9 @@ function AskBar({ className = '' }) {
             setStatus('answer');
         } catch (cause) {
             if (cause?.message === 'cancelled') {
+                setStatus('idle');
+                setQuestion('');
+                setAnswer('');
                 return;
             }
             setAnswer(cause?.message || "Couldn't generate an answer. Try again.");
@@ -380,96 +393,106 @@ function AskBar({ className = '' }) {
         setQuery(text.slice(0, MAX_LENGTH));
     };
 
-    const rootStyle = barWidth
-        ? { width: barWidth, maxWidth: '50vw' }
-        : { maxWidth: '50vw' };
+    const rootStyle = modelReady
+        ? barWidth
+            ? { width: barWidth, maxWidth: '50vw' }
+            : { maxWidth: '50vw' }
+        : undefined;
+
+    if (!modelReady && !showWarmupProgress) {
+        return null;
+    }
 
     return (
         <div
-            className={`ask-bar ${isLoading ? 'is-loading' : ''} ${isAnswer ? 'is-open' : ''} ${animateWidth ? 'is-width-animating' : ''} ${showClose ? 'has-close' : ''} ${className}`.trim()}
+            className={`ask-bar ${modelReady ? '' : 'is-warming'} ${isLoading ? 'is-loading' : ''} ${isAnswer ? 'is-open' : ''} ${animateWidth ? 'is-width-animating' : ''} ${showClose ? 'has-close' : ''} ${className}`.trim()}
             style={rootStyle}
         >
-            <span ref={sizerRef} className="ask-bar-input-sizer" aria-hidden="true">
-                {query || PLACEHOLDER}
-            </span>
+            {modelReady ? (
+                <>
+                    <span ref={sizerRef} className="ask-bar-input-sizer" aria-hidden="true">
+                        {query || PLACEHOLDER}
+                    </span>
 
-            {showClose && (
-                <button
-                    type="button"
-                    className="ask-bar-close"
-                    onClick={onClose}
-                    aria-label={isLoading ? 'Cancel' : 'Clear'}
-                >
-                    &times;
-                </button>
-            )}
+                    {showClose && (
+                        <button
+                            type="button"
+                            className="ask-bar-close"
+                            onClick={onClose}
+                            aria-label={isLoading ? 'Cancel' : 'Clear'}
+                        >
+                            &times;
+                        </button>
+                    )}
 
-            <GlassCard {...glassProps} className={cardClass} contentClassName="ask-bar-card-content">
-                <div className="ask-bar-stage">
-                    <form
-                        ref={formRef}
-                        className={`ask-bar-form ${showSubmit ? 'has-submit' : ''} ${isLoading ? 'is-exiting' : ''}`.trim()}
-                        role="search"
-                        aria-hidden={isLoading}
-                        onSubmit={onSubmit}
-                    >
-                        <SearchIcon />
-                        <label className="ask-bar-visually-hidden" htmlFor={`${panelId}-input`}>
-                            Ask anything about Arjun
-                        </label>
-                        <input
-                            id={`${panelId}-input`}
-                            ref={inputRef}
-                            className="ask-bar-input"
-                            type="text"
-                            value={query}
-                            placeholder={PLACEHOLDER}
-                            maxLength={MAX_LENGTH}
-                            autoComplete="off"
-                            spellCheck="false"
-                            aria-controls={panelId}
-                            tabIndex={isLoading ? -1 : 0}
-                            onChange={onQueryChange}
-                            onKeyDown={onKeyDown}
-                            onPaste={onPaste}
-                        />
-                        {showSubmit && (
-                            <button
-                                type="submit"
-                                className="ask-bar-submit"
-                                aria-label="Ask"
-                                tabIndex={isLoading ? -1 : 0}
-                                disabled={isLoading}
+                    <GlassCard {...glassProps} className={cardClass} contentClassName="ask-bar-card-content">
+                        <div className="ask-bar-stage">
+                            <form
+                                ref={formRef}
+                                className={`ask-bar-form ${showSubmit ? 'has-submit' : ''} ${isLoading ? 'is-exiting' : ''}`.trim()}
+                                role="search"
+                                aria-hidden={isLoading}
+                                onSubmit={onSubmit}
                             >
-                                <SubmitIcon />
-                            </button>
-                        )}
-                    </form>
+                                <SearchIcon />
+                                <label className="ask-bar-visually-hidden" htmlFor={`${panelId}-input`}>
+                                    Ask anything about Arjun
+                                </label>
+                                <input
+                                    id={`${panelId}-input`}
+                                    ref={inputRef}
+                                    className="ask-bar-input"
+                                    type="text"
+                                    value={query}
+                                    placeholder={PLACEHOLDER}
+                                    maxLength={MAX_LENGTH}
+                                    autoComplete="off"
+                                    spellCheck="false"
+                                    aria-controls={panelId}
+                                    tabIndex={isLoading ? -1 : 0}
+                                    onChange={onQueryChange}
+                                    onKeyDown={onKeyDown}
+                                    onPaste={onPaste}
+                                />
+                                {showSubmit && (
+                                    <button
+                                        type="submit"
+                                        className="ask-bar-submit"
+                                        aria-label="Ask"
+                                        tabIndex={isLoading ? -1 : 0}
+                                        disabled={isLoading}
+                                    >
+                                        <SubmitIcon />
+                                    </button>
+                                )}
+                            </form>
 
-                    <AskBarLoading
-                        ref={loadingRef}
-                        active={isLoading}
-                        label={loadingLabel(llm)}
-                        progress={llm.status === 'loading' ? llm.loadProgress : null}
-                    />
-                </div>
-
-                <div
-                    id={panelId}
-                    className={`ask-bar-panel ${isAnswer ? 'is-open' : ''}`}
-                    style={{ height: panelHeight }}
-                    aria-hidden={!isAnswer}
-                >
-                    <div className="ask-bar-panel-inner" ref={panelRef}>
-                        <p className="ask-bar-question">{question}</p>
-                        <div className="ask-bar-body" aria-live="polite">
-                            {isAnswer && <FadingAnswer text={answer} />}
+                            <AskBarLoading
+                                ref={loadingRef}
+                                active={isLoading}
+                                label={loadingLabel(llm)}
+                                progress={llm.status === 'loading' ? llm.loadProgress : null}
+                            />
                         </div>
-                    </div>
-                </div>
-            </GlassCard>
 
-            <ModelReadyProgress visible={showModelReady} progress={loadProgress} />
+                        <div
+                            id={panelId}
+                            className={`ask-bar-panel ${isAnswer ? 'is-open' : ''}`}
+                            style={{ height: panelHeight }}
+                            aria-hidden={!isAnswer}
+                        >
+                            <div className="ask-bar-panel-inner" ref={panelRef}>
+                                <p className="ask-bar-question">{question}</p>
+                                <div className="ask-bar-body" aria-live="polite">
+                                    {isAnswer && <FadingAnswer text={answer} />}
+                                </div>
+                            </div>
+                        </div>
+                    </GlassCard>
+                </>
+            ) : null}
+
+            <ModelReadyProgress visible={showWarmupProgress} progress={loadProgress} />
         </div>
     );
 }

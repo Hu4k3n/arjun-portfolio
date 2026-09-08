@@ -1,0 +1,98 @@
+.glass-nav {
+    position: fixed;
+    top: 1.25rem;
+    left: 50%;
+    z-index: 20;
+    transform: translateX(-50%);
+    width: max-content;
+    max-width: calc(100vw - 1.5rem);
+}
+
+.glass-nav-card {
+    position: relative;
+}
+
+/* Spectral edge shared with glass buttons / AskBar */
+.glass-nav-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    padding: 1px;
+    border-radius: inherit;
+    background: var(--portfolio-outline-gradient,
+        linear-gradient(135deg, #67e8f9 0%, #8b5cf6 55%, #ec4899 100%));
+    opacity: 0.78;
+    pointer-events: none;
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+}
+
+.glass-nav-card-content {
+    display: flex;
+    width: auto !important;
+}
+
+.glass-nav-list {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.glass-nav-item {
+    appearance: none;
+    border: 0;
+    margin: 0;
+    padding: 0.55rem 1.05rem;
+    border-radius: 999px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.72);
+    font-family: var(--portfolio-font, 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color 180ms ease, background-color 180ms ease, text-shadow 180ms ease;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+}
+
+.glass-nav-item:hover {
+    color: #fff;
+}
+
+.glass-nav-item.is-active {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.14);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+}
+
+.glass-nav-item:focus-visible {
+    outline: 2px solid #a5b4fc;
+    outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+    .glass-nav {
+        top: 0.75rem;
+    }
+
+    .glass-nav-item {
+        padding: 0.5rem 0.7rem;
+        font-size: 0.78rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .glass-nav-item {
+        transition: none;
+    }
+}
