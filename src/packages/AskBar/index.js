@@ -141,6 +141,11 @@ function ModelReadyProgress({ visible, progress }) {
             <span className="ask-bar-ready-label">
                 Getting ready{percent != null ? ` · ${percent}%` : '…'}
             </span>
+            {visible ? (
+                <p className="ask-bar-ready-disclaimer">
+                    First-time loading can take a while.
+                </p>
+            ) : null}
         </div>
     );
 }
