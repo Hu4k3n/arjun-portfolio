@@ -1,27 +1,33 @@
 {
   "files": {
-    "main.css": "/arjun-portfolio/static/css/main.6f42fb32.css",
-    "main.js": "/arjun-portfolio/static/js/main.6f7c9ea0.js",
+    "main.css": "/arjun-portfolio/static/css/main.b6cd736b.css",
+    "main.js": "/arjun-portfolio/static/js/main.ba2cd0c9.js",
+    "static/js/236.33ee107e.chunk.js": "/arjun-portfolio/static/js/236.33ee107e.chunk.js",
+    "static/js/333.0a1d7a9c.chunk.js": "/arjun-portfolio/static/js/333.0a1d7a9c.chunk.js",
     "static/js/453.6097658f.chunk.js": "/arjun-portfolio/static/js/453.6097658f.chunk.js",
+    "static/js/855.1c9fb97f.chunk.js": "/arjun-portfolio/static/js/855.1c9fb97f.chunk.js",
     "static/media/bgm.mp3": "/arjun-portfolio/static/media/bgm.17c3f7785ce7df8d7adf.mp3",
     "static/media/avatar-pic.png": "/arjun-portfolio/static/media/avatar-pic.6d5c886fa5d37b9fc248.png",
     "static/media/bgArtPoster.png": "/arjun-portfolio/static/media/bgArtPoster.ec47f825cf900e0e95c7.png",
     "static/media/bgArt.mp4": "/arjun-portfolio/static/media/bgArt.275bd9b59fb627cd3883.mp4",
     "static/media/Instagram.svg": "/arjun-portfolio/static/media/Instagram.062f333918be06be07149b1c81e879dd.svg",
     "static/media/Github.svg": "/arjun-portfolio/static/media/Github.35c7c6e3282cd621c2796874849b0159.svg",
-    "static/media/cv.svg": "/arjun-portfolio/static/media/cv.7f1b1a4702c472795c7849c1c7cb2b55.svg",
-    "static/media/LinkedIN.svg": "/arjun-portfolio/static/media/LinkedIN.602be20adc907e5c77b27fba13e953d3.svg",
+    "static/media/cv.svg": "/arjun-portfolio/static/media/cv.902130e73c72062d1a64dcbfb258dd0f.svg",
+    "static/media/LinkedIN.svg": "/arjun-portfolio/static/media/LinkedIN.f906d743b6f1e8ca9e908538ce9ce7ab.svg",
+    "static/media/Youtube.svg": "/arjun-portfolio/static/media/Youtube.2ff1b458e2f403e7dc3bbc3f18e29657.svg",
     "index.html": "/arjun-portfolio/index.html",
-    "static/media/Youtube.svg": "/arjun-portfolio/static/media/Youtube.e63eb3ab65cf4fbb3630b6cdb7b2cd13.svg",
-    "static/media/musicOff.svg": "/arjun-portfolio/static/media/musicOff.86a127ba54920b41cbb00c892bc9508c.svg",
-    "static/media/musicOn.svg": "/arjun-portfolio/static/media/musicOn.b2db2cd383c43b4751a83746097e172e.svg",
-    "static/media/back.svg": "/arjun-portfolio/static/media/back.f2e87cf90ba0ec0d125c18f4cb5226f4.svg",
-    "main.6f42fb32.css.map": "/arjun-portfolio/static/css/main.6f42fb32.css.map",
-    "main.6f7c9ea0.js.map": "/arjun-portfolio/static/js/main.6f7c9ea0.js.map",
-    "453.6097658f.chunk.js.map": "/arjun-portfolio/static/js/453.6097658f.chunk.js.map"
+    "static/media/musicOff.svg": "/arjun-portfolio/static/media/musicOff.d238ce15cd2fa8d28c091fd61d5b850d.svg",
+    "static/media/musicOn.svg": "/arjun-portfolio/static/media/musicOn.2454a0b34c5936cddb8504d8c9bb6762.svg",
+    "static/media/back.svg": "/arjun-portfolio/static/media/back.ece539cdeaebf614f0ca75338f09d8c7.svg",
+    "main.b6cd736b.css.map": "/arjun-portfolio/static/css/main.b6cd736b.css.map",
+    "main.ba2cd0c9.js.map": "/arjun-portfolio/static/js/main.ba2cd0c9.js.map",
+    "236.33ee107e.chunk.js.map": "/arjun-portfolio/static/js/236.33ee107e.chunk.js.map",
+    "333.0a1d7a9c.chunk.js.map": "/arjun-portfolio/static/js/333.0a1d7a9c.chunk.js.map",
+    "453.6097658f.chunk.js.map": "/arjun-portfolio/static/js/453.6097658f.chunk.js.map",
+    "855.1c9fb97f.chunk.js.map": "/arjun-portfolio/static/js/855.1c9fb97f.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.6f42fb32.css",
-    "static/js/main.6f7c9ea0.js"
+    "static/css/main.b6cd736b.css",
+    "static/js/main.ba2cd0c9.js"
   ]
 }
