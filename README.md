@@ -97,6 +97,8 @@ The export lives in `public/` and is loaded at runtime:
 
 ## Deploying
 
+Agent-oriented steps (bash + PowerShell): [`docs/DEPLOY.md`](docs/DEPLOY.md). Project map for agents: [`AGENTS.md`](AGENTS.md).
+
 `main` holds the source; `gh-pages` holds the built site at its root. Publish the build explicitly:
 
 ```bash
