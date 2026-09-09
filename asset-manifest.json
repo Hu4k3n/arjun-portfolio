@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/arjun-portfolio/static/css/main.b6cd736b.css",
-    "main.js": "/arjun-portfolio/static/js/main.ba2cd0c9.js",
+    "main.css": "/arjun-portfolio/static/css/main.891a5a09.css",
+    "main.js": "/arjun-portfolio/static/js/main.2b285b3e.js",
     "static/js/236.33ee107e.chunk.js": "/arjun-portfolio/static/js/236.33ee107e.chunk.js",
     "static/js/333.0a1d7a9c.chunk.js": "/arjun-portfolio/static/js/333.0a1d7a9c.chunk.js",
     "static/js/453.6097658f.chunk.js": "/arjun-portfolio/static/js/453.6097658f.chunk.js",
@@ -19,15 +19,15 @@
     "static/media/musicOff.svg": "/arjun-portfolio/static/media/musicOff.d238ce15cd2fa8d28c091fd61d5b850d.svg",
     "static/media/musicOn.svg": "/arjun-portfolio/static/media/musicOn.2454a0b34c5936cddb8504d8c9bb6762.svg",
     "static/media/back.svg": "/arjun-portfolio/static/media/back.ece539cdeaebf614f0ca75338f09d8c7.svg",
-    "main.b6cd736b.css.map": "/arjun-portfolio/static/css/main.b6cd736b.css.map",
-    "main.ba2cd0c9.js.map": "/arjun-portfolio/static/js/main.ba2cd0c9.js.map",
+    "main.891a5a09.css.map": "/arjun-portfolio/static/css/main.891a5a09.css.map",
+    "main.2b285b3e.js.map": "/arjun-portfolio/static/js/main.2b285b3e.js.map",
     "236.33ee107e.chunk.js.map": "/arjun-portfolio/static/js/236.33ee107e.chunk.js.map",
     "333.0a1d7a9c.chunk.js.map": "/arjun-portfolio/static/js/333.0a1d7a9c.chunk.js.map",
     "453.6097658f.chunk.js.map": "/arjun-portfolio/static/js/453.6097658f.chunk.js.map",
     "855.1c9fb97f.chunk.js.map": "/arjun-portfolio/static/js/855.1c9fb97f.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.b6cd736b.css",
-    "static/js/main.ba2cd0c9.js"
+    "static/css/main.891a5a09.css",
+    "static/js/main.2b285b3e.js"
   ]
 }
